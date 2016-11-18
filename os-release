@@ -1,0 +1,16 @@
+#!/bin/bash
+
+OS_RELEASE_FILE=/etc/os-release
+
+if [ ! -f "$OS_RELEASE_FILE" ]; then
+	echo "ERROR: No information (no such file: $OS_RELEASE_FILE)." 1>&2
+	exit 1
+fi
+
+IFS='='
+while read name value; do
+	name=$(sed -e 's/\(.*\)/\L\1/g; s/_/\ /g; s/^./\U&/g; s/\ ./\U&/g' <<< $name)
+	value=$(sed -e 's/"//g' <<< $value)
+	printf "%16s: %s\n" $name $value
+done < $OS_RELEASE_FILE
+
