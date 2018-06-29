@@ -5,6 +5,9 @@ VERSION="0.0.1-20180629"
 OS_RELEASE_FILES="/usr/lib/os-release /etc/os-release"
 
 PADDING=0
+DO_NOT_PRINT_KEYS=
+DO_NOT_PRETTY_PRINT_KEYS=
+KEY_TO_CHECK=
 
 declare -A OS_RELEASE_INFO
 declare -a OS_RELEASE_INFO_KEYS_ORDER
@@ -77,6 +80,41 @@ Options:
   -h        Show this help and exit.
 Note: OS Release files order: $OS_RELEASE_FILES
 EOT
+}
+
+function parse_arguments() {
+	while getopts ":hknNp:x:" opt; do
+		case "$opt" in
+			h)
+				print_help
+				exit
+			;;
+			k)
+				print_keys
+				exit
+			;;
+			n)
+				DO_NOT_PRINT_KEYS=yes
+			;;
+			N)
+				DO_NOT_PRETTY_PRINT_KEYS=yes
+			;;
+			p)
+				PADDING="$OPTARG"
+			;;
+			x)
+				local key=$(sed -e 's/\(.*\)/\U\1/g; s/\ /\_/g' <<< $OPTARG)
+				[ ! -z "$key" ] && key_exists "$key"
+				exit $?
+			;;
+			\?)
+                error "Invalid option: -$OPTARG" 1
+            ;;
+            :)
+                error "Option -$OPTARG requires an argument." 1
+            ;;
+		esac
+	done
 }
 
 function main() {
