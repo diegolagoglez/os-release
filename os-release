@@ -57,12 +57,25 @@ function print_keys() {
 }
 
 function print_os_release_information() {
-	IFS='='
-	while read name value; do
-		name=$(sed -e 's/\(.*\)/\L\1/g; s/_/\ /g; s/^./\U&/g; s/\ ./\U&/g' <<< $name)
-		value=$(sed -e 's/"//g' <<< $value)
-		printf "%16s: %s\n" $name $value
-	done < $OS_RELEASE_FILE
+	local key="$1"
+	local padding="$2"
+	if [ -z "$key" ]; then
+		return 1
+	fi
+	if ! key_exists "$key"; then
+		warning "Key '$key' not found."
+		return 1
+	fi
+	if [ -z "$DO_NOT_PRETTY_PRINT_KEYS" ]; then
+		name=$(sed -e 's/\(.*\)/\L\1/g; s/_/\ /g; s/^./\U&/g; s/\ ./\U&/g' <<< $key)
+	else
+		name="$key"
+	fi
+	if [ -z "$DO_NOT_PRINT_KEYS" ]; then
+		printf "%${PADDING}s: %s\n" $name ${OS_RELEASE_INFO[$key]}
+	else
+		printf "%s\n" ${OS_RELEASE_INFO[$key]}
+	fi
 }
 
 function print_help() {
