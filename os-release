@@ -138,7 +138,17 @@ function parse_arguments() {
 
 function main() {
 	check_os_release_file
-	print_os_release_information
+	read_os_release_information
+	parse_arguments "$@"
+	shift $((OPTIND - 1))
+	if [ $# -eq 0 ]; then
+		print_all_os_release_information
+	else
+		for arg in $@; do
+			arg=$(sed -e 's/\(.*\)/\U\1/g; s/\ /\_/g' <<< $arg)
+			print_os_release_information "$arg"
+		done
+	fi
 }
 
 main "$@"
