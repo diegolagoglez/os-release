@@ -2,6 +2,9 @@
 
 OS_RELEASE_FILES="/usr/lib/os-release /etc/os-release"
 
+declare -A OS_RELEASE_INFO
+declare -a OS_RELEASE_INFO_KEYS_ORDER
+
 function error() {
 	echo "ERROR: $1" >&2
 	exit $2
@@ -19,6 +22,20 @@ function check_os_release_file() {
 	done
 	echo "ERROR: No information (no such files: $OS_RELEASE_FILES)." 1>&2
 	exit 1
+}
+
+function read_os_release_information() {
+	for file in $OS_RELEASE_FILES; do
+		if [ -f "$file" ]; then
+			IFS='='
+			while read name value; do
+				value=$(sed -e 's/"//g' <<< $value)
+				OS_RELEASE_INFO_KEYS_ORDER+=($name)
+				OS_RELEASE_INFO[$name]="$value"
+			done < $file
+			break
+		fi
+	done
 }
 
 function print_os_release_information() {
