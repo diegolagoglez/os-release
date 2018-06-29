@@ -2,6 +2,15 @@
 
 OS_RELEASE_FILE=/etc/os-release
 
+function error() {
+	echo "ERROR: $1" >&2
+	exit $2
+}
+
+function warning() {
+	echo "WARNING: $1" >&2
+}
+
 function check_os_release_file() {
 	if [ ! -f "$OS_RELEASE_FILE" ]; then
 		echo "ERROR: No information (no such file: $OS_RELEASE_FILE)." 1>&2
