@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OS_RELEASE_FILE=/etc/os-release
+OS_RELEASE_FILES="/usr/lib/os-release /etc/os-release"
 
 function error() {
 	echo "ERROR: $1" >&2
@@ -12,10 +12,13 @@ function warning() {
 }
 
 function check_os_release_file() {
-	if [ ! -f "$OS_RELEASE_FILE" ]; then
-		echo "ERROR: No information (no such file: $OS_RELEASE_FILE)." 1>&2
-		exit 1
-	fi
+	for file in $OS_RELEASE_FILES; do
+		if [ -f "$file" ]; then
+			return 0
+		fi
+	done
+	echo "ERROR: No information (no such files: $OS_RELEASE_FILES)." 1>&2
+	exit 1
 }
 
 function print_os_release_information() {
