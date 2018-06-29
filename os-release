@@ -43,6 +43,12 @@ function read_os_release_information() {
 	done
 }
 
+function print_keys() {
+	for key in ${OS_RELEASE_INFO_KEYS_ORDER[@]}; do
+		echo $key
+	done
+}
+
 function print_os_release_information() {
 	IFS='='
 	while read name value; do
