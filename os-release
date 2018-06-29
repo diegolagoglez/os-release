@@ -78,6 +78,12 @@ function print_os_release_information() {
 	fi
 }
 
+function print_all_os_release_information() {
+	for key in ${OS_RELEASE_INFO_KEYS_ORDER[@]}; do
+		print_os_release_information "$key"
+	done
+}
+
 function print_help() {
 	cat <<EOT
 $(basename -- $0) v$VERSION -- Utility to print OS Release information.
