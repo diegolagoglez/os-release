@@ -1,6 +1,10 @@
 #!/bin/bash
 
+VERSION="0.0.1-20180629"
+
 OS_RELEASE_FILES="/usr/lib/os-release /etc/os-release"
+
+PADDING=0
 
 declare -A OS_RELEASE_INFO
 declare -a OS_RELEASE_INFO_KEYS_ORDER
@@ -56,6 +60,23 @@ function print_os_release_information() {
 		value=$(sed -e 's/"//g' <<< $value)
 		printf "%16s: %s\n" $name $value
 	done < $OS_RELEASE_FILE
+}
+
+function print_help() {
+	cat <<EOT
+$(basename -- $0) v$VERSION -- Utility to print OS Release information.
+GPLv3 Diego Lago González <diego.lago.gonzalez@gmail.com>
+Usage: $(basename -- $0) [options] [key [keys...]]
+  key(s)    Key(s) to print (case insensitive).
+Options:
+  -k        Print available keys.
+  -x <KEY>  Check if key <KEY> is a valid key.
+  -p <PAD>  Left padding to show keys (default: $PADDING).
+  -n        Do not print key names.
+  -N        Do not pretty print key names.
+  -h        Show this help and exit.
+Note: OS Release files order: $OS_RELEASE_FILES
+EOT
 }
 
 function main() {
