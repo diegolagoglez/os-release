@@ -24,6 +24,11 @@ function check_os_release_file() {
 	exit 1
 }
 
+function key_exists() {
+	local key="$1"
+	[[ "${OS_RELEASE_INFO_KEYS_ORDER[@]}" =~ "$key" ]]
+}
+
 function read_os_release_information() {
 	for file in $OS_RELEASE_FILES; do
 		if [ -f "$file" ]; then
